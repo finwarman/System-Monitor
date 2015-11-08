@@ -1,1 +1,0 @@
-print("Welcome to Jake and Fin's Computing Quiz!");
