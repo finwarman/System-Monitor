@@ -4,29 +4,31 @@ using System.Management;
 using System.Threading;
 using System.Net.NetworkInformation;
 using System.Net;
-using System.Text;
+using System.Text; //Usings.
+
 
 namespace SystemMonitor
 {
     class Program
-    {
+    { //Program
+        //
         static void Main(string[] args)
         {
-            //getCPUFreq();
-
+            Thread getCPUFrequency =
+                 new Thread(getCPUFreq);
             Thread windowSize =
                 new Thread(windowSizer);
             Thread timeWriter =
                 new Thread(writeTime);
             Thread ipUpdate =
-                new Thread(pingGoogle);
+                new Thread(pingGoogle); //Create threads.
 
             Console.Title = ("System Monitor");
             Console.WindowWidth = 43;
             Console.WindowHeight = 25;
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
-
-            Console.CursorVisible = false;
+            Console.CursorVisible = false; //Set-up Console Window.
+            
             ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
             double counter = 0;
             for (int i = 3; i > 0; i--)
@@ -51,39 +53,43 @@ namespace SystemMonitor
                     Thread.Sleep(60);
                     Console.Clear();
                 }
-            }
+            } //Loading Screen
+
             windowSize.Start();
-            Thread.Sleep(50);
+            Thread.Sleep(200);
             timeWriter.Start();
             Thread.Sleep(800);
             ipUpdate.Start();
-        }
-        static void End()
-        {
-            Console.ReadKey();
-            Console.Clear();
-        }
+            Thread.Sleep(50);
+            getCPUFrequency.Start(); //Start tasks, with intervals.
+
+        } //Main.
+        //
         static string timeString()
         {
             string time = DateTime.Now.ToString("HH:mm:ss");
             return time;
-        }
+        }      //Current Time to string.
+        //
         static string dateString()
         {
             string time = DateTime.Now.ToString("dd/MM/yyyy");
             return time;
-        }
+        }      //Current Date to string.
+        //
         static string OSProperties()
         {
             var name = (from x in new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem").Get().OfType<ManagementObject>()
                         select x.GetPropertyValue("Caption")).FirstOrDefault();
             return name != null ? name.ToString() : "Unknown";
-        }
+        }    //Get OS version.
+        //
         static string getAvailableRAM()
         {
             string RAMAvailable = "";
             return RAMAvailable;
-        }
+        } //Get RAM Available. [NOT FUNCTIONAL]
+        //
         public static void windowSizer()
         {
             string topLine = (" ╔═══════════════════════════════════════╗\n");
@@ -102,7 +108,8 @@ namespace SystemMonitor
             Console.SetCursorPosition(3, 7);
             Console.Write("User Account Name: " + userName);
             Thread.Sleep(2000);
-        }
+        }//Write overlay & make sure window is scaled.
+        //
         public static void writeTime()
         {
             while (true)
@@ -111,7 +118,8 @@ namespace SystemMonitor
                 Console.Write("Time: {0}    Date: {1}", timeString(), dateString());
                 Thread.Sleep(60);
             }
-        }
+        }  //Write Date and Time.
+        //
         public static void pingGoogle()
         {
             Ping pingSender = new Ping();
@@ -147,7 +155,8 @@ namespace SystemMonitor
                 }
                 Thread.Sleep(2000);
             }
-        }
+        } //Ping google.
+        //
         public static void writeping()
         {
             string ping1 = "1";
@@ -162,25 +171,49 @@ namespace SystemMonitor
                 Console.SetCursorPosition(0, 0);
                 Console.Write(ping3);
             }
-        }
+        } //Write result of pingGoogle().
+        //
         public static void getCPUFreq()
         {
+            int writewidth = 3;
             while (true)
             {
                 using (ManagementObject Mo = new ManagementObject("Win32_Processor.DeviceID='CPU0'"))
                 {
                     double currentsp = (uint)(Mo["CurrentClockSpeed"]);
                     double Maxsp = (uint)(Mo["MaxClockSpeed"]);
+                    double utilisation = (uint)(Mo[""]);
 
                     string GHZcurrentsp = (currentsp / 1000).ToString("G3");
                     string GHZMaxsp = (Maxsp / 1000).ToString("G3");
-                    string CPUUsage = ((currentsp / Maxsp)*100).ToString("G3");
-                    Console.Clear();
-                    Console.WriteLine("Current Clock Speed: {0} GHz\nMaximum Clock Speed: {1} GHz\nPercentage utilised: {2}%", GHZcurrentsp, GHZMaxsp, CPUUsage);
-
+                    string CPUUsage = ((currentsp / Maxsp) * 100).ToString("G3");
+                    Console.SetCursorPosition(writewidth, 10);
+                    Console.Write("CPU Clock Speed:\n");
+                    Console.CursorLeft = writewidth;
+                    Console.Write("Current: {0} GHz    \n", GHZcurrentsp);
+                    Console.CursorLeft = writewidth;
+                    Console.Write("Maximum: {0} GHz   \n", GHZMaxsp);
+                    Console.CursorLeft = writewidth;
+                    Console.Write("Utilised: {0}%    ", CPUUsage);
                 }
+                Thread.Sleep(500);
             }
+        }//Get CPU info and usage, write to console.
+        //
+        public static int globalTimer()
+        {
+            while (true)
+            {
+                int clock = 0;
+                Thread.Sleep(50);
+                clock++;
+                if (clock > 20)
+                {
+                    clock = 0;
+                }
+                return clock;
+            }
+        }//Attempt to sychronise schedule events. [NOT FUNCTIONAL]
 
-        }
     }
-}
+} //Close
