@@ -182,7 +182,7 @@ namespace SystemMonitor
                 {
                     double currentsp = (uint)(Mo["CurrentClockSpeed"]);
                     double Maxsp = (uint)(Mo["MaxClockSpeed"]);
-                    double utilisation = (uint)(Mo[""]);
+                    //double utilisation = (uint)(Mo[""]);
 
                     string GHZcurrentsp = (currentsp / 1000).ToString("G3");
                     string GHZMaxsp = (Maxsp / 1000).ToString("G3");
