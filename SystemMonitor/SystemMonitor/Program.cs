@@ -21,14 +21,14 @@ namespace SystemMonitor
             Thread timeWriter =
                 new Thread(writeTime);
             Thread ipUpdate =
-                new Thread(pingGoogle); //Create threads.
+                new Thread(writePing); //Create threads.
 
             Console.Title = ("System Monitor");
             Console.WindowWidth = 43;
             Console.WindowHeight = 25;
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
             Console.CursorVisible = false; //Set-up Console Window.
-            
+
             ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
             double counter = 0;
             for (int i = 3; i > 0; i--)
@@ -56,11 +56,11 @@ namespace SystemMonitor
             } //Loading Screen
 
             windowSize.Start();
-            Thread.Sleep(200);
+            Thread.Sleep(400);
             timeWriter.Start();
-            Thread.Sleep(800);
+            Thread.Sleep(2000);
             ipUpdate.Start();
-            Thread.Sleep(50);
+            Thread.Sleep(400);
             getCPUFrequency.Start(); //Start tasks, with intervals.
 
         } //Main.
@@ -107,7 +107,7 @@ namespace SystemMonitor
             Console.Write("OS: {0}", osProperties);
             Console.SetCursorPosition(3, 7);
             Console.Write("User Account Name: " + userName);
-            Thread.Sleep(2000);
+            //Thread.Sleep(2000);
         }//Write overlay & make sure window is scaled.
         //
         public static void writeTime()
@@ -115,12 +115,15 @@ namespace SystemMonitor
             while (true)
             {
                 Console.SetCursorPosition(3, 2);
-                Console.Write("Time: {0}    Date: {1}", timeString(), dateString());
+                if (Console.CursorLeft == 3 | Console.CursorTop == 2)
+                {
+                    Console.Write("Time: {0}    Date: {1}", timeString(), dateString());
+                }
                 Thread.Sleep(60);
             }
         }  //Write Date and Time.
         //
-        public static void pingGoogle()
+        public static string pingGoogle()
         {
             Ping pingSender = new Ping();
             IPAddress address = IPAddress.Parse("8.8.8.8");
@@ -130,52 +133,43 @@ namespace SystemMonitor
 
             int timeout = 2000;
 
+            try
+            {
+                PingReply reply = pingSender.Send(address, timeout, buffer);
+                if (reply.Status == IPStatus.Success)
+                {
+                    return (reply.RoundtripTime).ToString();
+                }
+                else
+                {
+                    return ("Failure");
+                }
+            }
+            catch (PingException)
+            {
+                return ("Failure");
+            }
+
+        } //Ping google.
+          //
+        public static void writePing()
+        {
             while (true)
             {
+                string currentping = pingGoogle();
                 Console.SetCursorPosition(3, 16);
-                Console.Write("              ");
-                try
+                if (Console.CursorLeft == 3 | Console.CursorTop == 16) //Make sure to write to correct location on screen - prevents graphical errors.
                 {
-                    PingReply reply = pingSender.Send(address, timeout, buffer);
-                    if (reply.Status == IPStatus.Success)
-                    {
-                        Console.SetCursorPosition(3, 16);
-                        Console.Write("Ping: {0}      ", reply.RoundtripTime);
-                    }
-                    else
-                    {
-                        Console.SetCursorPosition(3, 16);
-                        Console.Write("Ping: Failure");
-                    }
-                }
-                catch (PingException)
-                {
-                    Console.SetCursorPosition(3, 16);
-                    Console.Write("Ping: Failure");
+                    Console.Write("Ping: {0}    \n", currentping);
+                    Console.CursorLeft = 3;
+                    Console.Write("Previous Ping will go here lel.");
                 }
                 Thread.Sleep(2000);
             }
-        } //Ping google.
-        //
-        public static void writeping()
-        {
-            string ping1 = "1";
-            string ping2 = "2";
-            string ping3 = "3";
-            while (true)
-            {
-                Console.SetCursorPosition(0, 0);
-                Console.Write(ping1);
-                Console.SetCursorPosition(0, 0);
-                Console.Write(ping2);
-                Console.SetCursorPosition(0, 0);
-                Console.Write(ping3);
-            }
         } //Write result of pingGoogle().
-        //
+          //
         public static void getCPUFreq()
         {
-            int writewidth = 3;
             while (true)
             {
                 using (ManagementObject Mo = new ManagementObject("Win32_Processor.DeviceID='CPU0'"))
@@ -187,19 +181,22 @@ namespace SystemMonitor
                     string GHZcurrentsp = (currentsp / 1000).ToString("G3");
                     string GHZMaxsp = (Maxsp / 1000).ToString("G3");
                     string CPUUsage = ((currentsp / Maxsp) * 100).ToString("G3");
-                    Console.SetCursorPosition(writewidth, 10);
-                    Console.Write("CPU Clock Speed:\n");
-                    Console.CursorLeft = writewidth;
-                    Console.Write("Current: {0} GHz    \n", GHZcurrentsp);
-                    Console.CursorLeft = writewidth;
-                    Console.Write("Maximum: {0} GHz   \n", GHZMaxsp);
-                    Console.CursorLeft = writewidth;
-                    Console.Write("Utilised: {0}%    ", CPUUsage);
+                    Console.SetCursorPosition(3, 10);
+                    if (Console.CursorLeft == 3 | Console.CursorTop == 10)
+                    {
+                        Console.Write("CPU Clock Speed:\n");
+                        Console.CursorLeft = 3;
+                        Console.Write("Current: {0} GHz    \n", GHZcurrentsp);
+                        Console.CursorLeft = 3;
+                        Console.Write("Maximum: {0} GHz   \n", GHZMaxsp);
+                        Console.CursorLeft = 3;
+                        Console.Write("Utilised: {0}%    ", CPUUsage);
+                    }
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(600);
             }
         }//Get CPU info and usage, write to console.
-        //
+         //
         public static int globalTimer()
         {
             while (true)
@@ -214,6 +211,26 @@ namespace SystemMonitor
                 return clock;
             }
         }//Attempt to sychronise schedule events. [NOT FUNCTIONAL]
+
+        public static string externalIP()//Grab external IP from checkip.dyndnss.org
+        {
+
+            string url = "http://checkip.dyndns.org";
+            WebRequest req = WebRequest.Create(url);
+            WebResponse resp = req.GetResponse();
+            System.IO.StreamReader sr = new System.IO.StreamReader(resp.GetResponseStream());
+            string response = sr.ReadToEnd().Trim();
+            string[] a = response.Split(':');
+            string a2 = a[1].Substring(1);
+            string[] a3 = a2.Split('<');
+            string a4 = a3[0];
+            //
+            string externalip = new WebClient().DownloadString("http://icanhazip.com");
+
+            //
+            //
+            return a4;
+        }
 
     }
 } //Close
