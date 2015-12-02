@@ -22,7 +22,7 @@ namespace SystemMonitor
                 new Thread(writeTime);
             Thread ipUpdate =
                 new Thread(writePing); //Create threads.
-
+            xdd
             Console.Title = ("System Monitor");
             Console.WindowWidth = 43;
             Console.WindowHeight = 25;
@@ -114,10 +114,12 @@ namespace SystemMonitor
         {
             while (true)
             {
+                string time = timeString();
+                string date = dateString();
                 Console.SetCursorPosition(3, 2);
                 if (Console.CursorLeft == 3 | Console.CursorTop == 2)
                 {
-                    Console.Write("Time: {0}    Date: {1}", timeString(), dateString());
+                    Console.Write("Time: {0}    Date: {1}", time, date);
                 }
                 Thread.Sleep(60);
             }
@@ -160,7 +162,7 @@ namespace SystemMonitor
                 Console.SetCursorPosition(3, 16);
                 if (Console.CursorLeft == 3 | Console.CursorTop == 16) //Make sure to write to correct location on screen - prevents graphical errors.
                 {
-                    Console.Write("Ping: {0}    \n", currentping);
+                    Console.Write("Ping: {0}      \n", currentping);
                     Console.CursorLeft = 3;
                     Console.Write("Previous Ping will go here lel.");
                 }
@@ -185,11 +187,11 @@ namespace SystemMonitor
                     if (Console.CursorLeft == 3 | Console.CursorTop == 10)
                     {
                         Console.Write("CPU Clock Speed:\n");
-                        Console.CursorLeft = 3;
+                        Console.SetCursorPosition(3, 11);
                         Console.Write("Current: {0} GHz    \n", GHZcurrentsp);
-                        Console.CursorLeft = 3;
+                        Console.SetCursorPosition(3, 12);
                         Console.Write("Maximum: {0} GHz   \n", GHZMaxsp);
-                        Console.CursorLeft = 3;
+                        Console.SetCursorPosition(3, 13);
                         Console.Write("Utilised: {0}%    ", CPUUsage);
                     }
                 }
