@@ -1,0 +1,12 @@
+C:\Users\finle\Documents\.System Monitor\SystemMonitor\SystemMonitor\bin\Debug\SystemMonitor.exe.config
+C:\Users\finle\Documents\.System Monitor\SystemMonitor\SystemMonitor\bin\Debug\SystemMonitor.exe
+C:\Users\finle\Documents\.System Monitor\SystemMonitor\SystemMonitor\bin\Debug\SystemMonitor.pdb
+C:\Users\finle\Documents\.System Monitor\SystemMonitor\SystemMonitor\obj\Debug\SystemMonitor.csprojResolveAssemblyReference.cache
+C:\Users\finle\Documents\.System Monitor\SystemMonitor\SystemMonitor\obj\Debug\SystemMonitor.exe
+C:\Users\finle\Documents\.System Monitor\SystemMonitor\SystemMonitor\obj\Debug\SystemMonitor.pdb
+C:\Users\finle\Documents\.System Monitor\System-Monitor\SystemMonitor\SystemMonitor\bin\Debug\SystemMonitor.exe.config
+C:\Users\finle\Documents\.System Monitor\System-Monitor\SystemMonitor\SystemMonitor\bin\Debug\SystemMonitor.exe
+C:\Users\finle\Documents\.System Monitor\System-Monitor\SystemMonitor\SystemMonitor\bin\Debug\SystemMonitor.pdb
+C:\Users\finle\Documents\.System Monitor\System-Monitor\SystemMonitor\SystemMonitor\obj\Debug\SystemMonitor.exe
+C:\Users\finle\Documents\.System Monitor\System-Monitor\SystemMonitor\SystemMonitor\obj\Debug\SystemMonitor.pdb
+C:\Users\finle\Documents\.System Monitor\System-Monitor\SystemMonitor\SystemMonitor\obj\Debug\SystemMonitor.csprojResolveAssemblyReference.cache
